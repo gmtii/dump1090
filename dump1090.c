@@ -1802,10 +1802,18 @@ void interactiveShowData(void) {
     time_t now = time(NULL);
     char progress[4];
     int count = 0;
+    
+    FILE *fp;
 
     memset(progress,' ',3);
     progress[time(NULL)%3] = '.';
     progress[3] = '\0';
+    
+     if ((fp = fopen("dump.txt","a")) == NULL) {
+        fprintf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
+        exit(1);
+    }
+    
 
     printf("\x1b[H\x1b[2J");    /* Clear the screen */
     printf(
@@ -1821,13 +1829,22 @@ void interactiveShowData(void) {
             altitude /= 3.2828;
             speed *= 1.852;
         }
-
-        printf("%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
+    
+        // Manda dump a un fichero
+    
+        fprintf(fp,"%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages,
             (int)(now - a->seen));
         a = a->next;
         count++;
+    /*
+        printf("%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
+            a->hexaddr, a->flight, altitude, speed,
+            a->lat, a->lon, a->track, a->messages,
+            (int)(now - a->seen));
+        a = a->next;
+        count++; */
     }
 }
 
