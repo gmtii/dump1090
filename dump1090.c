@@ -1809,7 +1809,7 @@ void interactiveShowData(void) {
     progress[time(NULL)%3] = '.';
     progress[3] = '\0';
     
-     if ((fp = fopen("dump.txt","a")) == NULL) {
+     if ((fp = fopen("/tmp/dump.txt","a")) == NULL) {
         fprintf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
         exit(1);
     }
@@ -1838,13 +1838,13 @@ void interactiveShowData(void) {
             (int)(now - a->seen));
         a = a->next;
         count++;
-    /*
+    
         printf("%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages,
             (int)(now - a->seen));
         a = a->next;
-        count++; */
+        count++; 
     }
 }
 
