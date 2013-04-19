@@ -1808,7 +1808,7 @@ void interactiveShowData(void) {
     progress[time(NULL)%3] = '.';
     progress[3] = '\0';
     
-     if ((fp = fopen("/tmp/dump.txt","a")) == NULL) {
+     if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
         fprintf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
         exit(1);
     }
@@ -1817,6 +1817,11 @@ void interactiveShowData(void) {
     printf(
 "Hex    Flight   Altitude  Speed   Lat       Lon       Track  Messages Seen %s\n"
 "--------------------------------------------------------------------------------\n",
+        progress);
+
+    fprintf(fp,
+"Hex    Flight   Alt.  Spd Lat     Lon     Trk Msg  S%s\n"
+"------------------------------------------------------\n",
         progress);
 
     while(a && count < Modes.interactive_rows) {
@@ -1830,7 +1835,7 @@ void interactiveShowData(void) {
     
         // Manda dump a un fichero
     
-        fprintf(fp,"%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
+        fprintf(fp,"%-6s %-8s %-5d %-3d %-7.03f %-7.03f %-3d %-4ld %d\n",
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages,
             (int)(now - a->seen));
