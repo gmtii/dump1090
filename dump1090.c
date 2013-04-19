@@ -1802,7 +1802,6 @@ void interactiveShowData(void) {
     time_t now = time(NULL);
     char progress[4];
     int count = 0;
-    
     FILE *fp;
 
     memset(progress,' ',3);
@@ -1814,7 +1813,6 @@ void interactiveShowData(void) {
         exit(1);
     }
     
-
     printf("\x1b[H\x1b[2J");    /* Clear the screen */
     printf(
 "Hex    Flight   Altitude  Speed   Lat       Lon       Track  Messages Seen %s\n"
@@ -1836,8 +1834,6 @@ void interactiveShowData(void) {
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages,
             (int)(now - a->seen));
-        a = a->next;
-        count++;
         
         printf("%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
             a->hexaddr, a->flight, altitude, speed,
