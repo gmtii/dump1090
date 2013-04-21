@@ -169,6 +169,7 @@ struct {
     int stats;                      /* Print stats at exit in --ifile mode. */
     int onlyaddr;                   /* Print only ICAO addresses. */
     int metric;                     /* Use metric units. */
+	int dpf;						/* Dumps interactive to /tmp/dump.txt to display in a dpf lcd4linux compatible screen */
     int aggressive;                 /* Aggressive detection algorithm. */
 
     /* Interactive mode */
@@ -1809,10 +1810,20 @@ void interactiveShowData(void) {
     progress[time(NULL)%3] = '.';
     progress[3] = '\0';
     
-     if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
-        fprintf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
-        exit(1);
-    }
+	if (Modes.dpf) {	
+
+	printf("abriendo fichero...\n");
+
+		 if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
+		    fprintf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
+		    exit(1);
+		}
+
+    fprintf(fp,
+"Hex    Flight   Alt.  Spd Lat     Lon     Trk Msg  S%s\n"
+"------------------------------------------------------\n",
+        progress);
+	}
     
     printf("\x1b[H\x1b[2J");    /* Clear the screen */
     printf(
@@ -1820,32 +1831,28 @@ void interactiveShowData(void) {
 "----------------------------------------------------------------------------\n",
         progress);
 
-    fprintf(fp,
-"Hex    Flight   Alt.  Spd Lat     Lon     Trk Msg  S%s\n"
-"------------------------------------------------------\n",
-        progress);
+
 
     while(a && count < Modes.interactive_rows) {
         int altitude = a->altitude, speed = a->speed;
-
+		/* dist=kms to plane from know lat, lon */
 		double dist=haversine_km(a->lat, a->lon);
-
-		
 
         /* Convert units to metric if --metric was specified. */
         if (Modes.metric) {
             altitude /= 3.2828;
             speed *= 1.852;
         }
-    
-        // Manda dump a un fichero
-    
+    	/* Dumps interactive screen to /tmp/dump.txt if --dpf was specified. */
+		if (Modes.dpf) {		
+
         fprintf(fp,"%-6s %-8s %-5d %-3d %-7.03f %-7.03f %-3d %-4ld %d\n",
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages, 
             (int)(now - a->seen));
-		fprintf(fp,"Dist.   %-3.02f km.\n\n", dist);
-        
+		fprintf(fp,"Dist.  %-3.02f km.\n", dist);
+        }
+
         printf("%-6s %-8s %-5d %-4d %-7.03f   %-7.03f   %-3d   %-5ld %-3.02f %d \n",
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages, dist,
@@ -1854,7 +1861,7 @@ void interactiveShowData(void) {
         count++; 
     }
     
-    fclose(fp);
+    if (Modes.dpf) fclose(fp);
     
 }
 
@@ -1863,12 +1870,14 @@ double haversine_km(double lat1, double long1)
 
 {
 
+#define d2r 0.0174532925199433
+#define lat2 28.458712
+#define long2 -16.261868
+
+
+	/* Aborts if lat&lon are not available. */
 	if ( lat1 ==0 && long1 ==0) 
 		return 0;
-
-	double d2r=0.0174532925199433;
-	double lat2=28.458712; 
-	double long2=-16.261868;
 
     double dlong = (long2 - long1) * d2r;
     double dlat = (lat2 - lat1) * d2r;
@@ -2503,6 +2512,8 @@ int main(int argc, char **argv) {
             Modes.onlyaddr = 1;
         } else if (!strcmp(argv[j],"--metric")) {
             Modes.metric = 1;
+        } else if (!strcmp(argv[j],"--dpf")) {
+            Modes.dpf = 1;
         } else if (!strcmp(argv[j],"--aggressive")) {
             Modes.aggressive++;
         } else if (!strcmp(argv[j],"--interactive")) {
