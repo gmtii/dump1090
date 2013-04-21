@@ -234,6 +234,7 @@ struct modesMessage {
 };
 
 void interactiveShowData(void);
+double haversine_km(double lat1, double long1);
 struct aircraft* interactiveReceiveData(struct modesMessage *mm);
 void modesSendRawOutput(struct modesMessage *mm);
 void modesSendSBSOutput(struct modesMessage *mm, struct aircraft *a);
@@ -1815,8 +1816,8 @@ void interactiveShowData(void) {
     
     printf("\x1b[H\x1b[2J");    /* Clear the screen */
     printf(
-"Hex    Flight   Altitude  Speed   Lat       Lon       Track  Messages Seen %s\n"
-"--------------------------------------------------------------------------------\n",
+"Hex    Flight   Alt.  Spd  Lat       Lon       Track Mess. Dist  Seen %s\n"
+"----------------------------------------------------------------------------\n",
         progress);
 
     fprintf(fp,
@@ -1826,6 +1827,10 @@ void interactiveShowData(void) {
 
     while(a && count < Modes.interactive_rows) {
         int altitude = a->altitude, speed = a->speed;
+
+		double dist=haversine_km(a->lat, a->lon);
+
+		
 
         /* Convert units to metric if --metric was specified. */
         if (Modes.metric) {
@@ -1837,12 +1842,13 @@ void interactiveShowData(void) {
     
         fprintf(fp,"%-6s %-8s %-5d %-3d %-7.03f %-7.03f %-3d %-4ld %d\n",
             a->hexaddr, a->flight, altitude, speed,
-            a->lat, a->lon, a->track, a->messages,
+            a->lat, a->lon, a->track, a->messages, 
             (int)(now - a->seen));
+		fprintf(fp,"Dist.   %-3.02f km.\n\n", dist);
         
-        printf("%-6s %-8s %-9d %-7d %-7.03f   %-7.03f   %-3d   %-9ld %d sec\n",
+        printf("%-6s %-8s %-5d %-4d %-7.03f   %-7.03f   %-3d   %-5ld %-3.02f %d \n",
             a->hexaddr, a->flight, altitude, speed,
-            a->lat, a->lon, a->track, a->messages,
+            a->lat, a->lon, a->track, a->messages, dist,
             (int)(now - a->seen));
         a = a->next;
         count++; 
@@ -1850,6 +1856,27 @@ void interactiveShowData(void) {
     
     fclose(fp);
     
+}
+
+
+double haversine_km(double lat1, double long1)
+
+{
+
+	if ( lat1 ==0 && long1 ==0) 
+		return 0;
+
+	double d2r=0.0174532925199433;
+	double lat2=28.458712; 
+	double long2=-16.261868;
+
+    double dlong = (long2 - long1) * d2r;
+    double dlat = (lat2 - lat1) * d2r;
+    double a = pow(sin(dlat/2.0), 2) + cos(lat1*d2r) * cos(lat2*d2r) * pow(sin(dlong/2.0), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1-a));
+    double d = 6367 * c;
+
+    return d;
 }
 
 /* When in interactive mode If we don't receive new nessages within
