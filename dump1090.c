@@ -169,7 +169,7 @@ struct {
     int stats;                      /* Print stats at exit in --ifile mode. */
     int onlyaddr;                   /* Print only ICAO addresses. */
     int metric;                     /* Use metric units. */
-	int dpf;						/* Dumps interactive to /tmp/dump.txt to display in a dpf lcd4linux compatible screen */
+    int dpf;                        /* Dumps interactive to /tmp/dump.txt to display in a dpf lcd4linux compatible screen */
     int aggressive;                 /* Aggressive detection algorithm. */
 
     /* Interactive mode */
