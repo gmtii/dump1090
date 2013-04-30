@@ -2432,6 +2432,7 @@ void showHelp(void) {
 "--no-crc-check           Disable messages with broken CRC (discouraged).\n"
 "--aggressive             More CPU for more messages (two bits fixes, ...).\n"
 "--stats                  With --ifile print stats at exit. No other output.\n"
+"--dpf			  Dumps interactive screen to /tmp/dump.txt (for lcd4linux).\n"
 "--onlyaddr               Show only ICAO addresses (testing purposes).\n"
 "--metric                 Use metric units (meters, km/h, ...).\n"
 "--snip <level>           Strip IQ file removing samples < level.\n"
