@@ -1810,12 +1810,11 @@ void interactiveShowData(void) {
     progress[time(NULL)%3] = '.';
     progress[3] = '\0';
     
-	if (Modes.dpf) {	
-
-		 if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
-		    printf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
-		    exit(1);
-		}
+    if (Modes.dpf) {	
+    if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
+    printf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
+    exit(1);
+    }
 
     fprintf(fp,
 "Hex    Flight   Alt.  Spd Lat     Lon     Trk Msg  S%s\n"
@@ -1842,8 +1841,7 @@ void interactiveShowData(void) {
             speed *= 1.852;
         }
     	/* Dumps interactive screen to /tmp/dump.txt if --dpf was specified. */
-		if (Modes.dpf) {		
-
+        if (Modes.dpf) {		
         fprintf(fp,"%-6s %-8s %-5d %-3d %-7.03f %-7.03f %-3d %-4ld %d\n",
             a->hexaddr, a->flight, altitude, speed,
             a->lat, a->lon, a->track, a->messages, 
