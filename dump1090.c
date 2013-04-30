@@ -1812,10 +1812,8 @@ void interactiveShowData(void) {
     
 	if (Modes.dpf) {	
 
-	printf("abriendo fichero...\n");
-
 		 if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
-		    fprintf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
+		    printf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
 		    exit(1);
 		}
 
