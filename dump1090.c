@@ -2623,8 +2623,8 @@ void interactiveShowData(void) {
 "Hex     Mode  Sqwk  Flight   Alt    Spd  Hdg    Lat      Long   Sig  Msgs   Ti%c\n", progress);
     
     	fprintf(fp,
-"Hex     M     Sqwk  Flight   Alt    Spd  Hdg  Sig  Msgs   Ti%c\n"
-"--------------------------------------------------------------\n",progress);
+"Hex    Flight   Sqwk Alt   Spd Trk Msgs Dist  Ti%c\n"
+"-----------------------------------------------------\n",progress);
 
 } else {
         printf (
@@ -2703,11 +2703,12 @@ void interactiveShowData(void) {
                 a->addr, mode, squawk, a->flight, altitude, speed, a->track,
                 a->lat, a->lon, signalAverage, msgs, (int)(now - a->seen));
 
+
+
 				if (Modes.dpf) {		
-					fprintf(fp,"%06x  %-4s  %-4s  %-8s %5d  %3d  %3d  %3d %5d   %2d\n",
-		            a->addr, mode, squawk, a->flight, altitude, speed, a->track,
-		            signalAverage, msgs, (int)(now - a->seen));
-					fprintf(fp,"Dist.  %3.02f %7.03f %8.03f \n", dist, a->lat, a->lon);
+					fprintf(fp,"%06x %-8s %-4s %5d %3d %3d %4d %3.01f %2d\n",
+		            a->addr, a->flight, squawk, altitude, speed, a->track, msgs, dist, (int)(now - a->seen));
+					//fprintf(fp,"Dist.  %3.02f %7.03f %8.03f \n", dist, a->lat, a->lon);
 				}
             }
 
@@ -3640,3 +3641,4 @@ int main(int argc, char **argv) {
     rtlsdr_close(Modes.dev);
     exit (0);
 }
+
