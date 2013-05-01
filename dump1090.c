@@ -1812,7 +1812,7 @@ void interactiveShowData(void) {
     
     if (Modes.dpf) {	
     if ((fp = fopen("/tmp/dump.txt","w+")) == NULL) {
-    printf(stderr, "Error opening dump.txt: %s\n", strerror(errno));
+    printf("Error opening dump.txt: %s\n", strerror(errno));
     exit(1);
     }
 
