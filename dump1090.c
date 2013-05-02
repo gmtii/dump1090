@@ -2621,10 +2621,10 @@ void interactiveShowData(void) {
     if (Modes.interactive_rtl1090 == 0) {
         printf (
 "Hex     Mode  Sqwk  Flight   Alt    Spd  Hdg    Lat      Long   Sig  Msgs   Ti%c\n", progress);
-    
+        if (Modes.dpf) {
     	fprintf(fp,
 "Hex    Flight   Sqwk Alt   Spd Trk Msgs Dist  Ti%c\n"
-"-----------------------------------------------------\n",progress);
+"-----------------------------------------------------\n",progress); }
 
 } else {
         printf (
@@ -2703,12 +2703,10 @@ void interactiveShowData(void) {
                 a->addr, mode, squawk, a->flight, altitude, speed, a->track,
                 a->lat, a->lon, signalAverage, msgs, (int)(now - a->seen));
 
-
-
-				if (Modes.dpf) {		
-					fprintf(fp,"%06x %-8s %-4s %5d %3d %3d %4d %3.01f %2d\n",
-		            a->addr, a->flight, squawk, altitude, speed, a->track, msgs, dist, (int)(now - a->seen));
-					//fprintf(fp,"Dist.  %3.02f %7.03f %8.03f \n", dist, a->lat, a->lon);
+		if (Modes.dpf) {		
+		fprintf(fp,"%06x %-8s %-4s %5d %3d %3d %4d %4.01f  %2d\n",
+		a->addr, a->flight, squawk, altitude, speed, a->track, msgs, dist, (int)(now - a->seen));
+		//fprintf(fp,"Dist.  %3.02f %7.03f %8.03f \n", dist, a->lat, a->lon);
 				}
             }
 
